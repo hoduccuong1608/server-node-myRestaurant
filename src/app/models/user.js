@@ -42,4 +42,36 @@ User.login =  function (data, result) {
     })
 }
 
+User.update =  function (data, result) {
+    let sqlUpdate = `UPDATE users SET Name = '${data.name}', PassWord = '${data.password}', DoB = '${data.dob}' WHERE UserID = '${data.id}';`
+    db.query(sqlUpdate, function(err, update) {
+        if(err) {
+            return result (err);
+        } else {
+            sqlUpdate = `SELECT * FROM users WHERE UserID = '${data.id}'`
+            db.query(sqlUpdate, function(err, user) {
+            if(err) {
+            return result (err);
+            }else return result(user)
+    })
+        }
+    })
+}
+User.recharge =  function (data, result) {
+    let sqlRecharge = `UPDATE users SET TotalMoney = TotalMoney + '${data.money}' WHERE UserID = '${data.id}';`
+    db.query(sqlRecharge, function(err, recharge) {
+        if(err) {
+            return result (err);
+        } else {
+            sqlRecharge = `SELECT * FROM users WHERE UserID = '${data.id}'`
+            db.query(sqlRecharge, function(err, user) {
+            if(err) {
+            return result (err);
+            }else return result(user)
+    })
+        }
+    })
+        }
+    
+
 module.exports = User
