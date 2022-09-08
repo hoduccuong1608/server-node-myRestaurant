@@ -41,5 +41,17 @@ const  UserController =  {
             else res.status(200).json(response)         
         })
     },
+    addToCart: (req,res) => {
+        let data = Object.create(null);
+        data = {...req.body} 
+        // console.log(data)
+        User.addItem(data, function(response){
+            // console.log(response)
+            if(!response) {
+                res.status(400).json(null)
+            }
+            else res.status(200).json(response)         
+        })
+    },
 }
 module.exports =  UserController;

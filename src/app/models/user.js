@@ -72,6 +72,42 @@ User.recharge =  function (data, result) {
         }
     })
         }
+
+        User.addItem =  function (data, result) {
+            db.query(`SELECT Cart from users WHERE UserID = '${data.id}'`, function(err, listCart) {
+                console.log(listCart)
+                if(listCart[0].Cart === null) {
+                    let sqlAddCart = `UPDATE users SET Cart = ('${JSON.stringify(data.cart)}') WHERE UserID = ${data.id}`
+                    db.query(sqlAddCart, function(err, update) {
+                        if(err) {
+                            return result (err);
+                        } else {
+                            sqlAddCart = `SELECT Cart FROM users WHERE UserID =${data.id}`
+                            db.query(sqlAddCart, function(err, cart) {
+                            if(err) {
+                            return result (err);
+                            }else return result(cart)
+                    })
+                        }
+                    })
+                } else {
+                let items = listCart[0].Cart.concat(data.cart)
+                // console.log(items)
+                sqlAddCart = `UPDATE users SET Cart = ('${JSON.stringify(items)}') WHERE UserID = ${data.id}`
+                db.query(sqlAddCart, function(err, update) {
+                    if(err) {
+                        return result (err);
+                    } else {
+                        sqlAddCart = `SELECT Cart FROM users WHERE UserID =${data.id}`
+                        db.query(sqlAddCart, function(err, cart) {
+                        if(err) {
+                        return result (err);
+                        }else return result(cart)
+                })
+                    }
+                })}
+            })
+        }
     
 
 module.exports = User
