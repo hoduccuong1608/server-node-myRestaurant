@@ -2,6 +2,7 @@
 const UserController = require('../app/controllers/UserController')
 const DishController = require('../app/controllers/DishController')
 const DrinkController = require('../app/controllers/DrinkController')
+const ListOrderController = require('../app/controllers/ListOrderController')
 
 function route(app) {
     //login
@@ -16,6 +17,11 @@ function route(app) {
     app.get('/api/drinks', DrinkController.getAllDrink);
     // cart
     app.post('/api/cart/add', UserController.addToCart);
+    app.post('/api/cart/edit', UserController.editCart);
+    app.get('/api/cart/:id', UserController.getAllCart);
+    // list order
+    app.post('/api/book/product', ListOrderController.bookProduct);
+    app.get('/api/book/:id', ListOrderController.getAllBook);
 
 }
 

@@ -73,41 +73,53 @@ User.recharge =  function (data, result) {
     })
         }
 
-        User.addItem =  function (data, result) {
-            db.query(`SELECT Cart from users WHERE UserID = '${data.id}'`, function(err, listCart) {
-                console.log(listCart)
-                if(listCart[0].Cart === null) {
-                    let sqlAddCart = `UPDATE users SET Cart = ('${JSON.stringify(data.cart)}') WHERE UserID = ${data.id}`
-                    db.query(sqlAddCart, function(err, update) {
-                        if(err) {
+    User.addItem =  function (data, result) {
+         db.query(`SELECT Cart from users WHERE UserID = '${data.id}'`, function(err, listCart) {
+                // console.log(listCart)
+            if(listCart[0].Cart === null) {
+                let sqlAddCart = `UPDATE users SET Cart = ('${JSON.stringify(data.cart)}') WHERE UserID = ${data.id}`
+                db.query(sqlAddCart, function(err) {
+                    if(err) {
                             return result (err);
-                        } else {
-                            sqlAddCart = `SELECT Cart FROM users WHERE UserID =${data.id}`
-                            db.query(sqlAddCart, function(err, cart) {
-                            if(err) {
-                            return result (err);
-                            }else return result(cart)
-                    })
-                        }
+                    } else return result(true)
                     })
                 } else {
                 let items = listCart[0].Cart.concat(data.cart)
                 // console.log(items)
                 sqlAddCart = `UPDATE users SET Cart = ('${JSON.stringify(items)}') WHERE UserID = ${data.id}`
-                db.query(sqlAddCart, function(err, update) {
+                db.query(sqlAddCart, function(err) {
                     if(err) {
                         return result (err);
-                    } else {
-                        sqlAddCart = `SELECT Cart FROM users WHERE UserID =${data.id}`
-                        db.query(sqlAddCart, function(err, cart) {
-                        if(err) {
-                        return result (err);
-                        }else return result(cart)
-                })
-                    }
+                    } return result(true)
                 })}
             })
         }
+    User.getList = function(id,result) {
+        let sql = `SELECT Cart FROM users WHERE UserID = '${id}'`;
+        db.query(sql, function(err, cart) {
+            if(err) {
+                return result(false)
+             }
+            return result(cart)
+             
+        })
+    }
+    User.editItem =  function(data, result) {
+        let sqlEdit = `UPDATE users SET Cart = JSON_REMOVE(Cart,"$[${data.index}]") WHERE UserID = '${data.id}' `
+        db.query(sqlEdit, function(err, c) {
+            if(err) {
+                return result(false)
+             } else {
+                sqlEdit = `SELECT Cart FROM users Where UserID = '${data.id}'`
+                db.query(sqlEdit, function(err, cart) {
+                    if(err) {
+                        return result(false)
+                    } else {
+                        return result(cart)
+                    }
+                })
+             }                    
+        })
+    }
     
-
 module.exports = User
